@@ -42,18 +42,26 @@
     "deploy:base-sepolia": "hardhat run scripts/deployOrynPayment.ts --network baseSepolia"
   },
   "keywords": [
+    "ai",
+    "ai-agent-sdk",
     "base",
+    "base-mainnet",
     "blockchain",
     "base-sepolia",
     "crypto",
     "ethers",
+    "agent-payments",
+    "agent-sdk",
     "payments",
     "ai-agents",
     "agents",
+    "stablecoin",
+    "onchain-payments",
+    "machine-payments",
+    "autonomous-agents",
     "usdc",
     "web3",
-    "sdk",
-    "solidity"
+    "sdk"
   ],
   "dependencies": {
     "@openzeppelin/contracts": "^5.2.0",
