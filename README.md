@@ -149,6 +149,90 @@ console.log("Sender after:", await sender.getBalance("simple-agent-001"));
 console.log("Recipient after:", await sender.getBalance("simple-agent-002"));
 ```
 
+## Using Oryn With Existing Agents
+
+The integration pattern is the same no matter which model stack you use:
+
+1. your agent does its normal reasoning
+2. your app decides another agent or service should be paid
+3. you call `oryn.pay(...)`
+4. the workflow continues after the payment confirms
+
+### Claude / Anthropic
+
+```ts
+import Anthropic from "@anthropic-ai/sdk";
+import { OrynSDK } from "@oryn/sdk";
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+const oryn = new OrynSDK({
+  contractAddress: process.env.ORYN_PAYMENT_CONTRACT_ADDRESS!,
+  usdcAddress: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  chainId: 84532
+});
+
+await oryn.connect(process.env.PRIVATE_KEY!, process.env.BASE_SEPOLIA_RPC_URL!);
+
+const response = await anthropic.messages.create({
+  model: "claude-3-5-haiku-latest",
+  max_tokens: 300,
+  messages: [{ role: "user", content: "Review this task and decide if compute is needed." }]
+});
+
+console.log(response.content[0].text);
+
+const receipt = await oryn.pay("claude-agent-001", "compute-agent-001", 0.5);
+console.log("Compute agent paid:", receipt.hash);
+```
+
+Use this when a Claude-based agent needs to pay a compute, retrieval, or verification agent after deciding a task should be delegated.
+
+### OpenAI
+
+```ts
+import OpenAI from "openai";
+import { OrynSDK } from "@oryn/sdk";
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+const oryn = new OrynSDK({
+  contractAddress: process.env.ORYN_PAYMENT_CONTRACT_ADDRESS!,
+  usdcAddress: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  chainId: 84532
+});
+
+await oryn.connect(process.env.PRIVATE_KEY!, process.env.BASE_SEPOLIA_RPC_URL!);
+
+const result = await openai.responses.create({
+  model: "gpt-4.1-mini",
+  input: "Plan how to enrich this task with premium search."
+});
+
+console.log(result.output_text);
+
+const receipt = await oryn.pay("planner-agent-001", "search-agent-001", 0.1);
+console.log("Search agent paid:", receipt.hash);
+```
+
+Use this when an OpenAI-powered planner or assistant needs to pay another registered agent or tool step inside a larger workflow.
+
+### Generic agent pattern
+
+If you already have your own agent runtime, the payment hook usually looks like this:
+
+```ts
+async function maybePayForWork(task: string) {
+  const decision = await agent.decide(task);
+
+  if (decision.shouldDelegate) {
+    await oryn.pay("planner-agent-001", decision.targetAgentId, decision.amountUSDC);
+  }
+
+  return decision;
+}
+```
+
+The important part is that Oryn does not replace your model or orchestration logic. It plugs into the moment where your existing agent decides money should move.
+
 ## API
 
 ### `connect(privateKey, rpcUrl)`
