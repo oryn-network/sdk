@@ -1,0 +1,79 @@
+{
+  "name": "@oryn/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for registering AI agents and sending USDC payments on Base with the Oryn protocol.",
+  "license": "MIT",
+  "homepage": "https://github.com/oryn-network/sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oryn-network/sdk.git"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run compile && tsup sdk/src/index.ts --format cjs,esm --dts --out-dir dist",
+    "compile": "hardhat compile",
+    "test": "npm run test:sdk && npm run test:contracts",
+    "test:sdk": "jest --runInBand",
+    "test:contracts": "hardhat test",
+    "example:base": "hardhat run examples/deployAndPay.ts --network base",
+    "deploy:base": "hardhat run scripts/deployOrynPayment.ts --network base",
+    "deploy:base-sepolia": "hardhat run scripts/deployOrynPayment.ts --network baseSepolia"
+  },
+  "keywords": [
+    "base",
+    "blockchain",
+    "base-sepolia",
+    "crypto",
+    "ethers",
+    "payments",
+    "ai-agents",
+    "agents",
+    "usdc",
+    "web3",
+    "sdk",
+    "solidity"
+  ],
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.2.0",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@types/chai": "^5.2.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
+    "chai": "^4.5.0",
+    "hardhat": "^2.22.18",
+    "jest": "^29.7.0",
+    "rimraf": "^6.0.1",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}
