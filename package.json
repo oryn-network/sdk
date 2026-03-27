@@ -1,6 +1,6 @@
 {
   "name": "@oryn/sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "TypeScript SDK for registering AI agents and sending USDC payments on Base with the Oryn protocol.",
   "license": "MIT",
   "homepage": "https://github.com/oryn-network/sdk",
