@@ -1,7 +1,0 @@
-node_modules
-dist
-artifacts
-cache
-.env
-coverage
-**/.DS_Store
